@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ рекламнах компаний</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Метрики</h1>
+    <table border="3">
+        <tr>
+            <th>ID</th>
+            <th>Дата</th>
+            <th>Показы</th>
+            <th>Клики</th>
+            <th>CTR(%)</th>
+            <th>Цена</th>
+            <th>Конверсии</th>
+            <th>CPA</th>
+        </tr>
+        {% for row in metrics %}
+        <tr>
+            <td>{{ row.campaign_id }}</td>
+            <td>{{ row.date }}</td>
+            <td>{{ row.impressions }}</td>
+            <td>{{ row.clicks }}</td>
+            <td>{{ row.CTR }}</td>
+            <td>{{ row.cost }}</td>
+            <td>{{ row.conversions }}</td>
+            <td>{{ row.CPA }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <script>
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: {{ metrics|map(attribute='date')|list|tojson }},
+              datasets: [{
+                  label: 'CTR (%)',
+                  data: {{ metrics|map(attribute='CTR')|list|tojson }},
+                  backgroundColor: 'aqua',
+                  borderColor: 'blue',
+                  borderWidth: 2
+              }]
+          },
+          options: {
+              scales: {
+                  y: {
+                      beginAtZero: true
+                  }
+              }
+          }
+      });
+    </script>
+</body>
+</html>
